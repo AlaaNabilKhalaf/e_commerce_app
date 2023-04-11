@@ -1,9 +1,11 @@
 import 'dart:convert';
-import 'package:e_commerc/register_screen/sign_up_cubit/cubit_statues.dart';
+import 'package:e_commerc/shared/network/local_network.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:http/http.dart' as http;
 import 'package:http/http.dart';
+
+import 'cubit_statues.dart';
 
 class SignUpCubit extends Cubit<SignUpStates> {
   SignUpCubit() : super(SignUpInitialStates());
@@ -60,7 +62,8 @@ class SignUpCubit extends Cubit<SignUpStates> {
     );
       if(response.statusCode == 20){
         var data = jsonDecode(response.body);
-        if (data[state] == true){
+        if (data['status'] == true){
+          CacheNetwork.insertToValue(key: 'token', value: data['data']['token']);
           emit(LoginSuccessStates());
           debugPrint(data['message']);
         }
@@ -72,5 +75,11 @@ class SignUpCubit extends Cubit<SignUpStates> {
     }catch(e){
       emit(FailedToLoginStates(message: e.toString()));
     }
+  }
+
+  bool isShown = false;
+  void changePasswordView(){
+    isShown = !isShown;
+    emit(ChangePasswordViewState());
   }
 }

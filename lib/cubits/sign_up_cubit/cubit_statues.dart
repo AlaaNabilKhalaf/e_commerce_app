@@ -10,6 +10,7 @@ class FailedToSignUpStates extends SignUpStates {
 
 class LoginLoadingStates extends SignUpStates {}
 class LoginSuccessStates extends SignUpStates {}
+class ChangePasswordViewState extends SignUpStates {}
 class FailedToLoginStates extends SignUpStates {
   final String message;
   FailedToLoginStates({

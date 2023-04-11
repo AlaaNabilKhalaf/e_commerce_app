@@ -1,28 +1,25 @@
-import 'package:e_commerc/log_in_screen/Iog_in_screen.dart';
-import 'package:e_commerc/register_screen/sign_up_cubit/cubit.dart';
-import 'package:e_commerc/register_screen/sign_up_cubit/cubit_statues.dart';
+import 'package:e_commerc/screens/Iog_in_screen.dart';
+import 'package:e_commerc/screens/profile_screen.dart';
+import 'package:e_commerc/shared/constants/constants.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class SignUPScreen extends StatefulWidget {
+import '../cubits/sign_up_cubit/cubit.dart';
+import '../cubits/sign_up_cubit/cubit_statues.dart';
+
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({super.key});
+
   @override
-  State<SignUPScreen> createState() => _SignUPScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
-
-class _SignUPScreenState extends State<SignUPScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   final nameController = TextEditingController();
-
   final emailController = TextEditingController();
-
   final phoneController = TextEditingController();
-
   final passwordController = TextEditingController();
-
   final formKey = GlobalKey<FormState>();
-
-  late bool visable ;
-
  late Widget passwordIcon ;
 
   @override
@@ -56,6 +53,7 @@ class _SignUPScreenState extends State<SignUPScreen> {
                     child: Form(
                       key: formKey,
                       child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           //name
                           TextFormField(
@@ -63,7 +61,6 @@ class _SignUPScreenState extends State<SignUPScreen> {
                             decoration:  InputDecoration(
                               prefixIcon: const Icon(Icons.person,
                                 color: Color(0xff2d4569),size: 25,),
-
                               hintText: "Name",
                               border: OutlineInputBorder(
                                   borderRadius: BorderRadius.circular(50),
@@ -81,7 +78,7 @@ class _SignUPScreenState extends State<SignUPScreen> {
                               }
                             },
                           ),
-                       const SizedBox(height: 10,),
+                          const SizedBox(height: 10,),
                           //email
                           TextFormField(
                             controller: emailController,
@@ -131,26 +128,19 @@ class _SignUPScreenState extends State<SignUPScreen> {
                               }
                             },
                           ),
-                        const  SizedBox(height: 10,),
+                          const  SizedBox(height: 10,),
                           //password
                           TextFormField(
                             controller: passwordController,
-                            obscureText: visable,
+                            obscureText: true,
                             decoration: InputDecoration(
-                              suffix:const Icon(Icons.remove_red_eye_outlined,color: Color(0xff2d4569),size: 15,)
-                              // visable ?
-                              // IconButton(icon: const Icon(Icons.remove_red_eye,color: Color(0xff2d4569),
-                              // ), onPressed: () {
-                              //   visable == false;
-                              //   setState(() {
-                              //   });
-                              // },):
-                              //     IconButton(onPressed: (){
-                              //       visable == true;
-                              //       setState(() {
-                              //       });
-                              //     }, icon: const Icon(Icons.not_interested_rounded,color:Color(0xff2d4569) ,))
-                                ,
+                              suffix: GestureDetector(
+                                onTap: (){
+                                  BlocProvider.of<SignUpCubit>(context).changePasswordView();
+                                },
+                                child:
+                                Icon(BlocProvider.of<SignUpCubit>(context).isShown ? Icons.visibility_off
+                                    : Icons.visibility,color: myBlueColor ,)),
                               prefixIcon:const Icon(Icons.password,
                                 color: Color(0xff2d4569),size: 25,),
                               hintText: "Password",
@@ -174,24 +164,53 @@ class _SignUPScreenState extends State<SignUPScreen> {
                           MaterialButton(
                             //height: 50, minWidth: double.infinity,
                               onPressed: ()
-                          {
-                            if (formKey.currentState!.validate() == true){
-                              BlocProvider.of<SignUpCubit>(context).register(
-                                  email: emailController.text,
-                                  name: nameController.text,
-                                  phone: phoneController.text,
-                                  password: passwordController.text
-                              );
-                            }
-                          },
-                            height: 40,
-                            minWidth: 80,
+                          // {
+                          //   if (formKey.currentState!.validate() == true){
+                          //     BlocProvider.of<SignUpCubit>(context).register(
+                          //         email: emailController.text,
+                          //         name: nameController.text,
+                          //         phone: phoneController.text,
+                          //         password: passwordController.text
+                          //     );
+                          //   }
+                          // },
+                              {
+                                Navigator.push(context, MaterialPageRoute(builder: (context)=> const ProfileScreen()));
+                              },
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10)
+                            ),
+                            height: 50,
+                            minWidth: double.infinity,
                             color: const Color(0xff2d4569),
                             child: const Text('Register',style: TextStyle(
                               color: Colors.white,
-                              fontSize: 25
+                              fontSize: 27
                             ),),
                           ),
+                          const SizedBox(height: 20,),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Text('Already have an account ?  ',
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 17
+                              ),),
+                              GestureDetector(
+                                onTap: (){
+                                  Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> LogInScreen()));
+                                },
+                                child: const Text(
+                                  'Click Here',style: TextStyle(
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold,
+                                  color: myBlueColor
+                                ),
+                                ),
+                              )
+                            ],
+                          )
                         ],
 
                       ),
